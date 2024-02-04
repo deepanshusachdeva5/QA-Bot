@@ -1,0 +1,31 @@
+# Dockerfile.frontend
+
+# Use a specific version of Node.js
+FROM node:14-alpine AS frontend-build
+
+# Set working directory for the frontend
+WORKDIR /app/frontend/questions/
+
+# Copy frontend files
+COPY frontend /app/frontend
+
+# Install frontend dependencies
+RUN npm install
+
+# Runtime stage
+FROM node:14-alpine
+
+# Set working directory for the final image
+WORKDIR /app/frontend
+
+# Copy frontend files from the build stage
+COPY --from=frontend-build /app/frontend /app/frontend
+
+# Expose the port for the React application
+EXPOSE 3000
+
+WORKDIR /app/frontend/questions
+
+
+# Command to run the frontend
+CMD ["npm", "start"]
